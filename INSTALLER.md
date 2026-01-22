@@ -189,9 +189,3 @@ docker run -p 5000:5000 -p 3000:3000 footballprediction/app:latest
 - Cache is stored in `%APPDATA%\Football Prediction\cache`
 - Logs saved to `%APPDATA%\Football Prediction\logs`
 - Configuration stored in `%APPDATA%\Football Prediction\.env`
-
-## Support
-
-- **Issues**: https://github.com/yourrepo/FootScan/issues
-- **Wiki**: https://github.com/yourrepo/FootScan/wiki
-- **Email**: support@example.com

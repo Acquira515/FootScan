@@ -8,9 +8,9 @@
   "license": "MIT",
   "scripts": {
     "start": "electron .",
-    "dev": "concurrently \"npm run react-start\" \"wait-on http://localhost:3000 && electron .\"",
-    "react-start": "react-scripts start",
-    "react-build": "react-scripts build",
+    "dev": "concurrently \"cd renderer && npm run react-start\" \"wait-on http://localhost:3000 && electron .\"",
+    "react-start": "cd renderer && react-scripts start",
+    "react-build": "cd renderer && react-scripts build && cd .. && mkdir -p dist && cp -r renderer/build/* dist/",
     "build": "npm run react-build && electron-builder",
     "build-win": "npm run react-build && electron-builder --win",
     "pack": "electron-builder --dir",
@@ -34,21 +34,27 @@
   "build": {
     "appId": "com.footballprediction.app",
     "productName": "Football Prediction",
+    "extends": null,
     "files": [
-      "public",
       "dist",
       "main.js",
       "preload.js",
+      "is-dev.js",
       "node_modules"
     ],
     "directories": {
-      "buildResources": "public"
+      "buildResources": "renderer/public",
+      "output": "dist/app"
     },
     "win": {
       "target": [
         "nsis",
         "portable"
-      ]
+      ],
+      "certificateFile": null,
+      "certificatePassword": null,
+      "signingHashAlgorithms": ["sha256"],
+      "sign": null
     },
     "nsis": {
       "oneClick": false,
