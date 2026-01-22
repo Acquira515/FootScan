@@ -44,5 +44,3 @@ _(Languages used in the repo: Python, TypeScript, JavaScript, Batch) :contentRef
 
 ---
 
-ub.com/Acquira515/FootScan.git
-cd FootScan
