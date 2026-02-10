@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Trophy, Calendar, Clock, TrendingUp, Activity, Shield, Target, Settings, Info, X, 
   ChevronLeft, AlertCircle, BarChart2, Zap, Wind 
