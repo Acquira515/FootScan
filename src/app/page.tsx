@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
-  Trophy, Calendar, Clock, TrendingUp, Activity, Shield, Target, Settings, Info, X, 
-  ChevronLeft, AlertCircle, BarChart2, Zap, Wind 
+  Clock, TrendingUp, Activity, Shield, Target, Settings, Info,
+  ChevronLeft, AlertCircle, BarChart2, Zap
 } from 'lucide-react';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, 
