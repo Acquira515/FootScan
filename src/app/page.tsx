@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, 
-  Line, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
+  RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
   AreaChart, Area 
 } from 'recharts';
 
