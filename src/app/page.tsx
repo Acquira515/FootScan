@@ -338,8 +338,12 @@ const Header = ({ onSettingsClick, hasKey }: any) => (
 );
 
 const MatchCard = ({ match, onClick }: any) => {
-  const date = new Date(match.fixture.date);
   const predictions = match.predictions || { probabilities: { home: 50, draw: 25, away: 25 } };
+  const status = match.fixture?.status || {};
+  const elapsed = typeof status.elapsed === 'number' ? status.elapsed : null;
+  const displayTime = elapsed !== null && elapsed >= 0
+    ? `${elapsed}'`
+    : new Date(match.fixture.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   const confidence = predictions.metrics?.confidenceScore || Math.max(predictions.probabilities.home, predictions.probabilities.away).toFixed(0);
 
   return (
@@ -354,7 +358,7 @@ const MatchCard = ({ match, onClick }: any) => {
         </span>
         <span className={`text-xs ${THEME.accent} font-mono flex items-center gap-1`}>
           <Clock className="w-3 h-3" />
-          {date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          {displayTime}
         </span>
       </div>
 
