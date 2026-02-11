@@ -5,11 +5,7 @@ import {
   Clock, TrendingUp, Activity, Shield, Target, Settings, Info,
   ChevronLeft, AlertCircle, BarChart2, Zap
 } from 'lucide-react';
-import { 
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, 
-  RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
-  AreaChart, Area 
-} from 'recharts';
+// Recharts imports moved into client components to avoid SSR import issues
 
 // --- THEME CONSTANTS ---
 const THEME = {
