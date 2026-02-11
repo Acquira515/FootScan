@@ -1,6 +1,7 @@
-'use client';
+"use client";
 
 import { useMemo } from 'react';
+import dynamic from 'next/dynamic';
 import { ChevronLeft, Target, BarChart2, TrendingUp, Info } from 'lucide-react';
 import { 
   BarChart, 
@@ -23,6 +24,8 @@ import {
 } from 'recharts';
 import { THEME } from '@/constants/theme';
 import { generatePredictions } from '@/lib/predictions';
+
+const ConsensusChart = dynamic(() => import('./ConsensusChart'), { ssr: false });
 
 interface MatchDetailProps {
   match: any;
@@ -176,20 +179,7 @@ export const MatchDetail = ({ match, onClose }: MatchDetailProps) => {
           <div className={`${THEME.card} p-4 rounded-2xl border ${THEME.border} flex flex-col items-center justify-center`}>
              <h3 className="text-slate-400 text-sm font-medium uppercase tracking-wider w-full text-left mb-2">Model Consensus</h3>
              <div className="w-full h-[200px]">
-               <ResponsiveContainer width="100%" height="100%">
-                 <RadarChart cx="50%" cy="50%" outerRadius="70%" data={expertConsensusData}>
-                   <PolarGrid stroke="#333" />
-                   <PolarAngleAxis dataKey="subject" tick={{ fill: '#666', fontSize: 10 }} />
-                   <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
-                   <Radar name={match.teams.home.name} dataKey="A" stroke="#fff" fill="#fff" fillOpacity={0.3} />
-                   <Radar name={match.teams.away.name} dataKey="B" stroke="#E50914" fill="#E50914" fillOpacity={0.3} />
-                   <Legend wrapperStyle={{ fontSize: '10px' }} />
-                   <Tooltip 
-                      contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', color: '#fff' }}
-                      itemStyle={{ color: '#fff' }}
-                   />
-                 </RadarChart>
-               </ResponsiveContainer>
+               <ConsensusChart data={expertConsensusData} homeName={match.teams.home.name} awayName={match.teams.away.name} />
              </div>
             <p className="text-xs text-slate-500 text-center mt-2">
               Aggregated metrics from all 13 models.

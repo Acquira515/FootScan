@@ -701,12 +701,13 @@ const MatchDetail = ({ match, onClose }: any) => {
 // --- MAIN APP COMPONENT ---
 
 export default function App() {
-  const [apiKey, setApiKey] = useState<string>(() => {
+  const [apiKey, setApiKey] = useState<string>('');
+  useEffect(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('football_api_key') || '';
+      const key = localStorage.getItem('football_api_key') || '';
+      setApiKey(key);
     }
-    return '';
-  });
+  }, []);
   const [matches, setMatches] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
