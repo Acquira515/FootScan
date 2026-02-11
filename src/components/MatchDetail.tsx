@@ -95,7 +95,13 @@ export const MatchDetail = ({ match, onClose }: MatchDetailProps) => {
              <div className="absolute top-0 right-0 p-4 opacity-10">
                <Target className="w-24 h-24 text-white" />
              </div>
-             <h3 className="text-slate-400 text-sm font-medium uppercase tracking-wider mb-4">Outcome Probability</h3>
+             <div className="flex items-center justify-between">
+               <h3 className="text-slate-400 text-sm font-medium uppercase tracking-wider mb-4">Outcome Probability</h3>
+               <div className="text-right">
+                 <div className="text-xs text-slate-400">Consensus</div>
+                 <div className="text-sm font-bold text-white">{predictions.probabilities.home}% / {predictions.probabilities.draw}% / {predictions.probabilities.away}%</div>
+               </div>
+             </div>
              <div className="space-y-4 relative z-10">
                 <div>
                   <div className="flex justify-between text-white font-bold mb-1">
@@ -185,9 +191,42 @@ export const MatchDetail = ({ match, onClose }: MatchDetailProps) => {
                  </RadarChart>
                </ResponsiveContainer>
              </div>
-             <p className="text-xs text-slate-500 text-center mt-2">
-               Aggregated metrics from 6 distinct sub-models.
-             </p>
+            <p className="text-xs text-slate-500 text-center mt-2">
+              Aggregated metrics from all 13 models.
+            </p>
+          </div>
+        </div>
+
+        {/* Detailed per-model breakdown */}
+        <div className="mt-6">
+          <h3 className="text-white font-bold mb-3">Model Contributions</h3>
+          <div className="grid grid-cols-1 gap-3">
+            {(predictions.modelBreakdown || []).map((m: any) => (
+              <div key={m.name} className="bg-slate-900 p-3 rounded-lg border border-slate-800">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm font-medium text-white">{m.name}</span>
+                    <span className="text-xs text-slate-400">weight: {(m.weight*100).toFixed(0)}%</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-slate-300">Confidence</span>
+                    <span className="px-2 py-0.5 bg-slate-800 text-sm rounded text-white">{m.confidence}%</span>
+                  </div>
+                </div>
+
+                <div className="h-3 w-full bg-slate-800 rounded-full overflow-hidden flex">
+                  <div style={{ width: `${Math.round(m.home*100)}%` }} className="bg-white h-full" title={`Home ${Math.round(m.home*100)}%`} />
+                  <div style={{ width: `${Math.round(m.draw*100)}%` }} className="bg-slate-600 h-full" title={`Draw ${Math.round(m.draw*100)}%`} />
+                  <div style={{ width: `${Math.round(m.away*100)}%` }} className="bg-red-600 h-full" title={`Away ${Math.round(m.away*100)}%`} />
+                </div>
+
+                <div className="mt-2 text-xs text-slate-400 flex justify-between">
+                  <span>Home {Math.round(m.home*100)}%</span>
+                  <span>Draw {Math.round(m.draw*100)}%</span>
+                  <span>Away {Math.round(m.away*100)}%</span>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 

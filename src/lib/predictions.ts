@@ -141,18 +141,63 @@ export const generatePredictions = (matchData: any) => {
   ];
 
   const weights = [0.12,0.12,0.10,0.08,0.08,0.08,0.08,0.08,0.06,0.06,0.04,0.06,0.04];
+  // Build a human-readable breakdown for each model with home/draw/away + confidence
+  const modelNames = [
+    'Elo Rating System',
+    'Poisson Distribution',
+    'Exponential Form Decay',
+    'League Tier Adjustment',
+    'Head-to-Head Analysis',
+    'Home Field Advantage',
+    'Defensive Resilience',
+    'Clinical Efficiency',
+    'Draw Saturation',
+    'Fatigue Accumulation',
+    'Weather Impact',
+    'Season Progress',
+    'Consensus Confidence'
+  ];
 
-  let weightedSum = 0;
-  for (let i=0;i<modelScores.length;i++) {
-    weightedSum += (modelScores[i] || 0) * weights[i];
+  const modelBreakdown: any[] = [];
+  for (let i = 0; i < modelScores.length; i++) {
+    const score = Math.max(0, Math.min(1, modelScores[i] || 0));
+    // simple mapping to a three-way distribution
+    const home = score;
+    const draw = Math.max(0.02, 0.15 * (1 - Math.abs(score - 0.5) * 2));
+    let away = Math.max(0, 1 - home - draw);
+    // normalize
+    const sum = home + draw + away;
+    const nh = (home / sum) || 0;
+    const nd = (draw / sum) || 0;
+    const na = (away / sum) || 0;
+    const confidence = Math.max(10, Math.min(99, 40 + Math.abs(score - 0.5) * 120));
+
+    modelBreakdown.push({
+      name: modelNames[i],
+      home: nh,
+      draw: nd,
+      away: na,
+      confidence: Math.round(confidence),
+      weight: weights[i]
+    });
   }
 
-  // Apply fatigue, season, nbAdjust multiplicatively and clamp
-  let finalHomeProb = Math.min(0.95, Math.max(0.02, weightedSum * fatigueFactor * seasonScore * (1 - ((1 - nbAdjust) * 0.05))));
+  // Compute weighted consensus across models
+  let consHome = 0, consDraw = 0, consAway = 0;
+  for (const m of modelBreakdown) {
+    consHome += m.home * (m.weight || 0);
+    consDraw += m.draw * (m.weight || 0);
+    consAway += m.away * (m.weight || 0);
+  }
+  // apply fatigue/season/dispersion adjustments
+  consHome = consHome * fatigueFactor * seasonScore * (1 - ((1 - nbAdjust) * 0.05));
+  consAway = consAway * fatigueFactor * seasonScore * (1 - ((1 - nbAdjust) * 0.05));
+  consDraw = consDraw * 1.0; // keep draw neutral
 
-  // Rebalance draw/away using draw saturator
-  const finalAwayProb = Math.min(0.85, (1 - finalHomeProb) * 0.7 * (1 / drawSaturator));
-  const finalDrawProb = Math.max(0.01, 1 - finalHomeProb - finalAwayProb);
+  const totalCons = consHome + consDraw + consAway || 1;
+  const finalHomeProb = Math.min(0.95, Math.max(0.02, consHome / totalCons));
+  const finalDrawProb = Math.max(0.01, Math.min(0.9, consDraw / totalCons));
+  const finalAwayProb = Math.max(0.01, Math.min(0.95, consAway / totalCons));
 
   const confidenceScore = calculateConsensusConfidence([eloProb, probHomeForm, poissonHomeWin]);
 
@@ -206,5 +251,7 @@ export const generatePredictions = (matchData: any) => {
         momentum: momentumData,
         consensus: expertConsensusData
     }
+    ,
+    modelBreakdown
   };
 };
